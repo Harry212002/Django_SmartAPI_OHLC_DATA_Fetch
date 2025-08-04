@@ -14,13 +14,30 @@ def bot_config_view(request):
         "30 minute": "THIRTY_MINUTE",
         "1 hour": "ONE_HOUR",
     }
+    index_map = {
+        "NSE NIFTY 50": "NSE:NIFTY 50",
+        "BANKNIFTY": "BANKNIFTY",
+        "Tata": "TATASTEEL",
+        "WIPRO": "WIPRO",
+        "RELIANCE": "RELIANCE",
+        "XAUUSD": "GOLD",
+        "BTCUSD": "BTCUSD",
+        "US30": "US30",
+        "ETHUSD": "ETHUSD",
+    }
 
     selected_interval = "ONE_MINUTE"
-    if instance and instance.time_frame:
-        selected_interval = interval_map.get(instance.time_frame, "ONE_MINUTE")
+    selected_index = "NSE:NIFTY 50"
+
+    if instance:
+        if instance.time_frame:
+            selected_interval = interval_map.get(instance.time_frame, "ONE_MINUTE")
+        if instance.index:
+            selected_index=index_map.get(instance.index,"NSE:NIFTY 50")
+        
 
     # ✅ Fetch OHLC only initially
-    ohlc_data = fetch_ohlc_data(interval=selected_interval)
+    ohlc_data = fetch_ohlc_data(symbol=selected_index,interval=selected_interval)
 
     if request.method == 'POST':
         action = request.POST.get('action')
@@ -43,7 +60,13 @@ def bot_config_view(request):
             # ✅ Handle only time frame change without DB update
             selected_timeframe = request.POST.get('time_frame')
             selected_interval = interval_map.get(selected_timeframe, "ONE_MINUTE")
-            ohlc_data = fetch_ohlc_data(interval=selected_interval)
+            
+            selected_index_form=request.POST.get('index')
+            selected_index=index_map.get(selected_index_form,"NSE:NIFTY 50")
+            
+            
+            
+            ohlc_data = fetch_ohlc_data(symbol=selected_index,interval=selected_interval)
 
             form = BotConfigurationForm(request.POST, instance=instance)
             return render(request, 'config/bot_config.html', {

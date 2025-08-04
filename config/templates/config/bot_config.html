@@ -188,7 +188,19 @@
           timeFrameSelect.addEventListener('change', () => {
             document.querySelector('form').submit();
           });
+        }); document.addEventListener('DOMContentLoaded', () => {
+        const timeFrameSelect = document.querySelector('select[name="time_frame"]');
+        const indexSelect = document.querySelector('select[name="index"]');
+
+        timeFrameSelect.addEventListener('change', () => {
+          document.querySelector('form').submit();
         });
+
+        indexSelect.addEventListener('change', () => {
+          document.querySelector('form').submit();
+        });
+      });
+
 
   </script>
 </body>

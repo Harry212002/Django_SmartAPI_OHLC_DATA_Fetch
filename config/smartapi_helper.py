@@ -43,6 +43,13 @@ def fetch_ohlc_data(symbol="NSE:NIFTY 50", interval="ONE_MINUTE", days=1, save_c
         symbol_token_map = {
             "NSE:NIFTY 50": "3045",
             "BANKNIFTY": "99926000",
+            "TATASTEEL": "3499",
+            "WIPRO": "3787",
+            "RELIANCE": "2885",
+            "GOLD": "217",     # Example token for GOLD
+            "BTCUSD": "1234",  # Replace with actual token
+            "US30": "5678",    # Replace with actual token
+            "ETHUSD": "91011",
         }
         symbol_token = symbol_token_map.get(symbol, "3045")
 
