@@ -3,6 +3,8 @@ from .models import BotConfiguration
 from .forms import BotConfigurationForm
 from django.contrib import messages
 from .smartapi_helper import fetch_ohlc_data
+# ⬇️ ✅ UPDATED: Import EMA strategy function
+from .strategies import calculate_ema_signals 
 
 def bot_config_view(request):
     existing_configs = BotConfiguration.objects.all()
@@ -38,6 +40,9 @@ def bot_config_view(request):
 
     # ✅ Fetch OHLC only initially
     ohlc_data = fetch_ohlc_data(symbol=selected_index,interval=selected_interval)
+    
+    # ⬇️ ✅ UPDATED: Calculate EMA Buy/Sell signals
+    ema_df = calculate_ema_signals(ohlc_data)
 
     if request.method == 'POST':
         action = request.POST.get('action')
@@ -67,15 +72,20 @@ def bot_config_view(request):
             
             
             ohlc_data = fetch_ohlc_data(symbol=selected_index,interval=selected_interval)
+            
+             # ⬇️ ✅ UPDATED: Recalculate EMA after change
+            ema_df = calculate_ema_signals(ohlc_data)
 
             form = BotConfigurationForm(request.POST, instance=instance)
             return render(request, 'config/bot_config.html', {
                 'form': form,
-                'ohlc': ohlc_data
+                # 'ohlc': ohlc_data
+                'ohlc': ema_df.to_numpy().tolist()  # ✅ UPDATED: Pass EMA data
             })
 
     form = BotConfigurationForm(instance=instance)
     return render(request, 'config/bot_config.html', {
         'form': form,
-        'ohlc': ohlc_data
+        # 'ohlc': ohlc_data
+        'ohlc': ema_df.to_numpy().tolist()  # ✅ UPDATED: Pass EMA data
     })

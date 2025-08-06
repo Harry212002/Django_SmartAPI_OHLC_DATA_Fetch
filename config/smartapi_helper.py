@@ -68,7 +68,7 @@ def fetch_ohlc_data(symbol="NSE:NIFTY 50", interval="ONE_MINUTE", days=1, save_c
                 np.array(data),
                 columns=["Datetime", "Open", "High", "Low", "Close", "Volume"]
             )
-            print("📊 OHLC Data Fetched")
+            print("📊 OHLC Data Fetched",df)
 
             if save_csv:
                 export_dir = os.path.join(os.path.dirname(__file__), "csv_exports")
