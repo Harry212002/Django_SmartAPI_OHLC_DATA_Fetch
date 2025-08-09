@@ -49,3 +49,26 @@ class BotConfiguration(models.Model):
     quantity = models.FloatField(null=True, blank=True)
     def __str__(self):
         return f"BotConfig: {self.index} - {self.strategy}"
+    
+    
+    
+
+
+class TradeSignal(models.Model):
+    SIGNAL_CHOICES = [
+        ("BUY", "BUY"),
+        ("SELL", "SELL"),
+    ]
+    index = models.CharField(max_length=30,null=True, blank=True)  # Example: NSE NIFTY 50
+    time_frame = models.CharField(max_length=20,null=True, blank=True)  # Example: ONE_MINUTE  
+    datetime = models.DateTimeField()
+    open_price = models.FloatField()
+    high_price = models.FloatField()
+    low_price = models.FloatField()
+    close_price = models.FloatField()
+    signal = models.CharField(max_length=4, choices=SIGNAL_CHOICES)
+
+
+
+    def __str__(self):
+        return f"{self.datetime} - {self.index} - {self.signal}"

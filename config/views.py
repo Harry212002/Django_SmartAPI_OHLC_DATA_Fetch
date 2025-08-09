@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import BotConfiguration
+from .models import *
 from .forms import BotConfigurationForm
 from django.contrib import messages
 from .smartapi_helper import fetch_ohlc_data
@@ -59,6 +59,31 @@ def bot_config_view(request):
             if form.is_valid():
                 form.save()
                 messages.success(request, 'New configuration created successfully.')
+                
+                # ✅ Fetch fresh OHLC based on form
+                selected_timeframe = form.cleaned_data['time_frame']
+                selected_interval = interval_map.get(selected_timeframe, "ONE_MINUTE")
+
+                selected_index_form = form.cleaned_data['index']
+                selected_index = index_map.get(selected_index_form, "NSE:NIFTY 50")
+
+                ohlc_data = fetch_ohlc_data(symbol=selected_index, interval=selected_interval)
+                ema_df = calculate_ema_signals(ohlc_data)
+                
+                # ✅ Store only BUY/SELL signals
+                signal_rows = ema_df[ema_df["Signal"].isin(["BUY", "SELL"])]
+                for _, row in signal_rows.iterrows():
+                    TradeSignal.objects.create(
+                        datetime=row["Datetime"],
+                        open_price=row["Open"],
+                        high_price=row["High"],
+                        low_price=row["Low"],
+                        close_price=row["Close"],
+                        signal=row["Signal"],
+                        index=selected_index,
+                        time_frame=selected_interval
+                    )
+                
                 return redirect('bot_config')
 
         else:
@@ -89,3 +114,5 @@ def bot_config_view(request):
         # 'ohlc': ohlc_data
         'ohlc': ema_df.to_numpy().tolist()  # ✅ UPDATED: Pass EMA data
     })
+
+

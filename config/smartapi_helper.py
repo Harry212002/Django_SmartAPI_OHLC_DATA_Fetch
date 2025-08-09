@@ -21,7 +21,7 @@ def get_smartapi_session():
             settings.SMARTAPI_PASSWORD,
             totp
         )
-        print("✅ SmartAPI Session Created:", session_data)
+        # print("✅ SmartAPI Session Created:", session_data)
         smartapi_session = obj
     return smartapi_session
 
@@ -32,7 +32,7 @@ def fetch_ohlc_data(symbol="NSE:NIFTY 50", interval="ONE_MINUTE", days=1, save_c
 
         # ✅ Return cached data if available
         if cache_key in ohlc_cache:
-            print("⚡ Using cached OHLC data")
+            # print("⚡ Using cached OHLC data")
             return ohlc_cache[cache_key]
 
         obj = get_smartapi_session()
@@ -68,7 +68,7 @@ def fetch_ohlc_data(symbol="NSE:NIFTY 50", interval="ONE_MINUTE", days=1, save_c
                 np.array(data),
                 columns=["Datetime", "Open", "High", "Low", "Close", "Volume"]
             )
-            print("📊 OHLC Data Fetched",df)
+            print("📊 OHLC Data Fetched")
 
             if save_csv:
                 export_dir = os.path.join(os.path.dirname(__file__), "csv_exports")
