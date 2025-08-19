@@ -1,4 +1,3 @@
-
 from django.db import models
 class BotConfiguration(models.Model):
     TIME_FRAMES = [
@@ -38,37 +37,31 @@ class BotConfiguration(models.Model):
         ("ETHUSD", "ETHUSD"),
     ]
     time_frame = models.CharField(max_length=20, choices=TIME_FRAMES)
-    quantity = models.FloatField()
     broker = models.CharField(max_length=50, choices=BROKERS)
     strategy = models.CharField(max_length=50, choices=STRATEGIES)
     exit_type = models.CharField(max_length=30, choices=EXIT_TYPES)
     index = models.CharField(max_length=30, choices=INDEX_CHOICES)
     target = models.FloatField()
     stoploss = models.FloatField()
-    last_updated = models.DateTimeField(auto_now=True)
     quantity = models.FloatField(null=True, blank=True)
+    last_updated = models.DateTimeField(auto_now=True)
     def __str__(self):
         return f"BotConfig: {self.index} - {self.strategy}"
-    
-    
-    
-
-
 class TradeSignal(models.Model):
     SIGNAL_CHOICES = [
         ("BUY", "BUY"),
         ("SELL", "SELL"),
     ]
-    index = models.CharField(max_length=30,null=True, blank=True)  # Example: NSE NIFTY 50
-    time_frame = models.CharField(max_length=20,null=True, blank=True)  # Example: ONE_MINUTE  
+    index = models.CharField(max_length=30, null=True, blank=True)
+    time_frame = models.CharField(max_length=20, null=True, blank=True)
     datetime = models.DateTimeField()
     open_price = models.FloatField()
     high_price = models.FloatField()
     low_price = models.FloatField()
     close_price = models.FloatField()
     signal = models.CharField(max_length=4, choices=SIGNAL_CHOICES)
-
-
-
+    # :white_check_mark: New fields
+    order_id = models.CharField(max_length=100, null=True, blank=True)
+    order_status = models.CharField(max_length=50, null=True, blank=True)
     def __str__(self):
-        return f"{self.datetime} - {self.index} - {self.signal}"
+        return f"{self.datetime} - {self.index} - {self.signal} - {self.order_status or 'PENDING'}"
