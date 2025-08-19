@@ -15,6 +15,7 @@ One’s trading platform.
 
 Key Features:
 - Fetches real-time OHLC data using Angel One Smart API.
+- Place the Order in Real Time in Angel One 
 - Secure environment configuration using `.env` file.
 - Lightweight Django application, easy to set up and run locally.
 - Provides JSON response for OHLC data visualization or integration.
